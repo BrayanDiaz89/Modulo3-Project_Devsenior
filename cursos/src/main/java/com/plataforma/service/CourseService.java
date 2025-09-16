@@ -24,7 +24,7 @@ public class CourseService {
         courses.add(course);
         log.info(String.format("Se añadió el curso: %s", course.getNameCourse()));
     }
-    //Listar cursos método
+    //Listar cursos metodo
     public List<Course> getAllCourses(){
         return courses;
     }

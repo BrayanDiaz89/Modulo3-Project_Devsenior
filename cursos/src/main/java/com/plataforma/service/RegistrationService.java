@@ -8,10 +8,12 @@ import com.plataforma.exception.CourseFullException;
 import com.plataforma.exception.StudentAlreadyRegistered;
 import com.plataforma.model.Course;
 import com.plataforma.model.Student;
+import org.apache.logging.log4j.*;
 
 public class RegistrationService {
 
     private List<Course> courseRegistrations = new ArrayList<>();
+    private static final Logger log = LogManager.getLogger(RegistrationService.class);
 
     public void registrationCourse(Course course, Student student) throws StudentAlreadyRegistered, CourseFullException{
 
@@ -22,7 +24,8 @@ public class RegistrationService {
             student.addCourse(course);
             courseRegistrations.add(course);
             } else{
-            throw new StudentAlreadyRegistered(String.format("El estudiante con id: %s, ya está registrado en el curso: ", idStudent));
+                log.warn(String.format("Se ha intentado registrar al estudiante: %s. ya registrado.", student.getNameStudent()));
+                throw new StudentAlreadyRegistered(String.format("El estudiante con id: %s, ya está registrado en el curso: ", idStudent));
             }
         } else {
             throw new CourseFullException(String.format("El curso %s está full, no se admiten mas estudiantes.", course.getNameCourse()));
