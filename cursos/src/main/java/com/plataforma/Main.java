@@ -1,5 +1,6 @@
 package com.plataforma;
 
+import com.plataforma.dto.StudentListDTO;
 import com.plataforma.exception.CourseAndStudentNotRegistration;
 import com.plataforma.exception.CourseFullException;
 import com.plataforma.exception.CourseNotFoundException;
@@ -9,10 +10,14 @@ import com.plataforma.model.Student;
 import com.plataforma.service.CourseService;
 import com.plataforma.service.RegistrationService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         
         try {
+            List<StudentListDTO> students;
             CourseService serviceCourse = new CourseService(); 
             RegistrationService registrationService = new RegistrationService();
             
@@ -29,10 +34,10 @@ public class Main {
             registrationService.registrationCourse(java1, student2);
             registrationService.registrationCourse(java2, student3);
 
-            var course = serviceCourse.getCourseById("ja2");    
+            var course = serviceCourse.getCourseById("ja2");
             System.out.println(course);
 
-            var students = registrationService.getAllStudentsWithCoursesRegistration();
+            students = registrationService.getAllStudentsWithCoursesRegistration();
             students.forEach(System.out::println);
 
         } catch (CourseNotFoundException e) {

@@ -5,6 +5,7 @@ import java.util.List;
 import com.plataforma.dto.StudentListDTO;
 import com.plataforma.exception.CourseAndStudentNotRegistration;
 import com.plataforma.exception.CourseFullException;
+import com.plataforma.exception.CourseNotFoundException;
 import com.plataforma.exception.StudentAlreadyRegistered;
 import com.plataforma.model.Course;
 import com.plataforma.model.Student;
@@ -18,7 +19,7 @@ public class RegistrationService {
     public void registrationCourse(Course course, Student student) throws StudentAlreadyRegistered, CourseFullException{
 
         var idStudent = student.getIdStudent();
-        if(!courseIsFullCapacity(course, course.getStudents())){
+        if(!courseIsFullCapacity(course)){
             if(!studenExistsInCourse(course.getStudents(), idStudent)){
             course.addStudent(student);
             student.addCourse(course);
@@ -41,32 +42,23 @@ public class RegistrationService {
         return false;
     }
 
-    public boolean courseIsFullCapacity(Course course, List<Student> students){
-        return students.size() > course.getCapacity() ? true : false;
+    public boolean courseIsFullCapacity(Course course){
+        return course.getCapacity() <= course.getStudents().size();
     }
 
     public List<StudentListDTO> getAllStudentsWithCoursesRegistration() throws CourseAndStudentNotRegistration{
         List<StudentListDTO> studentsWithCourses = new ArrayList<>();
         for(Course course : courseRegistrations){
             for(Student student : course.getStudents()){
-                if(courseExists(course.getIdCourse(), courseRegistrations)){
                     var studentNew = new StudentListDTO(student.getNameStudent(), student.getCourses());
                     studentsWithCourses.add(studentNew);
-                }
             }
         }
         if(studentsWithCourses.isEmpty()){
             throw new CourseAndStudentNotRegistration("No hay estudiantes, ni cursos.");
         }
-        return studentsWithCourses;
-    }
-
-    public boolean courseExists(String idCourse, List<Course> courses){
-        for(Course course : courses){
-            if(course.getIdCourse().equals(idCourse)){
-                return true;
-            }
-        }
-        return false;
+        return studentsWithCourses.stream()
+                .distinct()
+                .toList();
     }
 }
